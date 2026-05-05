@@ -1,0 +1,86 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isStaff() {
+      return isSignedIn() && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staff' || isAdmin());
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Collections ---
+
+    // Users
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && request.resource.data.role == 'customer';
+      allow update: if isOwner(userId) && (
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid'])
+      ) || isAdmin();
+    }
+
+    // Vehicles
+    match /vehicles/{vehicleId} {
+      allow read: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && (request.resource.data.ownerId == request.auth.uid || isStaff());
+      allow update: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isStaff());
+      allow delete: if isSignedIn() && (resource.data.ownerId == request.auth.uid);
+    }
+
+    // Appointments
+    match /appointments/{appointmentId} {
+      allow read: if isSignedIn() && (resource.data.customerId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.customerId == request.auth.uid;
+      allow update: if isSignedIn() && (resource.data.customerId == request.auth.uid || isStaff());
+    }
+
+    // Services (Read-only for public, write for admin)
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Listings
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (resource.data.sellerId == request.auth.uid || isAdmin()) && (resource.data.status != 'sold');
+    }
+
+    // Chats & Messages
+    match /chats/{chatId} {
+      allow read, write: if isSignedIn() && (request.auth.uid in resource.data.participantIds || isStaff());
+      
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && (get(/databases/$(database)/documents/chats/$(chatId)).data.participantIds.hasAny([request.auth.uid]) || isStaff());
+        allow create: if isSignedIn() && (get(/databases/$(database)/documents/chats/$(chatId)).data.participantIds.hasAny([request.auth.uid]));
+      }
+    }
+
+    // Inventory
+    match /inventory/{itemId} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+  }
+}

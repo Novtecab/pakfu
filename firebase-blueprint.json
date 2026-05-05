@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and roles.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "admin", "staff"] },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Customer vehicle details.",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string" },
+        "make": { "type": "string" },
+        "model": { "type": "string" },
+        "year": { "type": "integer" },
+        "licensePlate": { "type": "string" },
+        "vin": { "type": "string" },
+        "isJapaneseImport": { "type": "boolean" },
+        "maintenanceHistory": { 
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "date": { "type": "string", "format": "date-time" },
+              "service": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "Appointment": {
+      "title": "Service Appointment",
+      "description": "Booking for mobile car services.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "staffId": { "type": "string" },
+        "serviceIds": { "type": "array" },
+        "vehicleId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "in_progress", "completed", "cancelled"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "location": { "type": "object" },
+        "totalPrice": { "type": "number" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Service": {
+      "title": "Service Catalog",
+      "description": "Available car services and prices.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "duration": { "type": "integer" }
+      }
+    },
+    "MarketplaceListing": {
+      "title": "Marketplace Listing",
+      "description": "Cars or accessories for sale.",
+      "type": "object",
+      "properties": {
+        "sellerId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "type": { "type": "string", "enum": ["car", "accessory"] },
+        "images": { "type": "array" },
+        "status": { "type": "string", "enum": ["active", "sold", "archived"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "Communication between buyers, sellers, and staff.",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "InventoryItem": {
+      "title": "Inventory Item",
+      "description": "Parts and accessories stock management.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "quantity": { "type": "integer" },
+        "price": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/vehicles/{vehicleId}": { "schema": "Vehicle", "description": "Customer vehicles" },
+    "/appointments/{appointmentId}": { "schema": "Appointment", "description": "Service bookings" },
+    "/services/{serviceId}": { "schema": "Service", "description": "Service definitions" },
+    "/listings/{listingId}": { "schema": "MarketplaceListing", "description": "Marketplace items" },
+    "/chats/{chatId}/messages/{messageId}": { "schema": "Message", "description": "Chat messages" },
+    "/inventory/{itemId}": { "schema": "InventoryItem", "description": "Inventory stock" }
+  }
+}

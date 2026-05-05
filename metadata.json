@@ -1,0 +1,6 @@
+{
+  "name": "FutureMotors",
+  "description": "Premium Nordic mobile car care, specialized services, and marketplace for cars and accessories.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": []
+}
