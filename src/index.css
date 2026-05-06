@@ -13,11 +13,21 @@
   --color-nordic-frost: #88C0D0;
   --color-nordic-forest: #4C566A;
   --color-nordic-slate: #3B4252;
+
+  /* Dark Mode Extensions */
+  --color-nordic-dark-snow: #2E3440;
+  --color-nordic-dark-ink: #ECEFF4;
+  --color-nordic-dark-blue: #81A1C1;
+  --color-nordic-dark-frost: #8FBCBB;
 }
 
 @layer base {
   body {
-    @apply bg-nordic-snow text-nordic-ink font-sans antialiased;
+    @apply bg-nordic-snow text-nordic-ink font-sans antialiased transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-[#0F1115] text-[#ECEFF4];
   }
 
   h1, h2, h3, h4 {
@@ -29,6 +39,14 @@
   @apply backdrop-blur-md bg-white/70 border border-white/20;
 }
 
+.dark .glass {
+  @apply bg-nordic-dark-snow/30 border-white/5;
+}
+
 .nordic-card {
   @apply bg-white border border-nordic-slate/10 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.dark .nordic-card {
+  @apply bg-[#161B22] border-white/5 shadow-xl shadow-black/20;
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingCart, User, MessageCircle, LayoutDashboard, Calendar, Menu, X, LogIn, LogOut, Car } from 'lucide-react';
+import { ShoppingCart, User, MessageCircle, LayoutDashboard, Calendar, Menu, X, LogIn, LogOut, Car, Moon, Sun, Globe } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
@@ -17,6 +17,35 @@ const Navbar = () => {
   const { user, isStaff } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  const toggleTheme = () => {
+    const newDark = !isDark;
+    setIsDark(newDark);
+    if (newDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    // Dispatch a custom event so other components (like Marketplace) can sync if they have local state
+    window.dispatchEvent(new Event('themeChange'));
+  };
+
+  React.useEffect(() => {
+    const handleThemeEvent = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    window.addEventListener('themeChange', handleThemeEvent);
+    
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      setIsDark(true);
+    }
+    return () => window.removeEventListener('themeChange', handleThemeEvent);
+  }, []);
 
   const login = async () => {
     const provider = new GoogleAuthProvider();
@@ -38,6 +67,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Services', path: '/', icon: Calendar },
     { name: 'Marketplace', path: '/marketplace', icon: Car },
+    { name: 'JDM Imports', path: '/jdm-orders', icon: Globe },
     { name: 'Book Now', path: '/book', icon: Calendar, highlight: true },
   ];
 
@@ -75,6 +105,14 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
+          <button 
+            onClick={toggleTheme}
+            className="p-2 hover:bg-nordic-slate/5 dark:hover:bg-nordic-dark-snow/20 rounded-full transition-colors text-nordic-ink dark:text-nordic-dark-ink"
+            title="Toggle Theme"
+          >
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          
           {user ? (
             <div className="flex items-center gap-4">
               <Link to="/chat" className="p-2 hover:bg-nordic-slate/5 rounded-full relative transition-colors">
@@ -131,6 +169,15 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+              <div className="flex justify-between items-center px-2">
+                <span className="text-sm font-bold uppercase tracking-widest opacity-40">App Theme</span>
+                <button 
+                  onClick={toggleTheme}
+                  className="flex items-center gap-2 px-4 py-2 bg-nordic-snow dark:bg-nordic-dark-snow rounded-full text-sm font-bold"
+                >
+                  {isDark ? <><Sun size={16} /> Light Mode</> : <><Moon size={16} /> Dark Mode</>}
+                </button>
+              </div>
               <hr className="border-nordic-slate/10" />
               {user ? (
                 <>

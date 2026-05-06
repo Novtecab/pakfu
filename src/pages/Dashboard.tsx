@@ -66,55 +66,75 @@ const Dashboard = () => {
   const totalRevenue = appointments.reduce((acc, curr) => acc + curr.totalPrice, 0);
   const activeBookings = appointments.filter(a => a.status === 'pending' || a.status === 'confirmed').length;
   
-  // Dummy chart data derived from actual appointments could go here, but let's provide a realistic trend
-  const chartData = [
-    { name: 'Mon', revenue: 450 },
-    { name: 'Tue', revenue: 780 },
-    { name: 'Wed', revenue: 1200 },
-    { name: 'Thu', revenue: 900 },
-    { name: 'Fri', revenue: 1540 },
-    { name: 'Sat', revenue: 2100 },
-    { name: 'Sun', revenue: 1800 },
-  ];
+  const [timeRange, setTimeRange] = useState<'weekly' | 'monthly' | 'yearly'>('weekly');
+
+  // Dummy chart data derived from status
+  const chartDataMap = {
+    weekly: [
+      { name: 'Mon', revenue: 450 },
+      { name: 'Tue', revenue: 780 },
+      { name: 'Wed', revenue: 1200 },
+      { name: 'Thu', revenue: 900 },
+      { name: 'Fri', revenue: 1540 },
+      { name: 'Sat', revenue: 2100 },
+      { name: 'Sun', revenue: 1800 },
+    ],
+    monthly: [
+      { name: 'Week 1', revenue: 5400 },
+      { name: 'Week 2', revenue: 6200 },
+      { name: 'Week 3', revenue: 4800 },
+      { name: 'Week 4', revenue: 7100 },
+    ],
+    yearly: [
+      { name: 'Jan', revenue: 12000 },
+      { name: 'Feb', revenue: 15400 },
+      { name: 'Mar', revenue: 18900 },
+      { name: 'Apr', revenue: 14200 },
+      { name: 'May', revenue: 21000 },
+      { name: 'Jun', revenue: 19500 },
+    ]
+  };
+
+  const chartData = chartDataMap[timeRange];
 
   return (
-    <div className="min-h-screen bg-nordic-snow py-20 px-6">
+    <div className="min-h-screen bg-nordic-snow dark:bg-[#0F1115] py-20 px-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto space-y-12">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-nordic-slate/10 pb-12">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-nordic-slate/10 dark:border-white/5 pb-12">
           <div className="space-y-4">
-            <h1 className="text-6xl font-serif tracking-tighter">Business Insights</h1>
-            <p className="text-nordic-ink/60 max-w-xl font-light">Real-time overview of FutureMotors operations and customer engagement.</p>
+            <h1 className="text-6xl font-serif tracking-tighter dark:text-nordic-dark-ink">Business Insights</h1>
+            <p className="text-nordic-ink/60 dark:text-nordic-dark-ink/40 max-w-xl font-light">Real-time overview of FutureMotors operations and customer engagement.</p>
           </div>
           <div className="flex gap-3">
-             <button className="px-6 py-3 bg-white border border-nordic-slate/10 rounded-xl text-sm font-bold hover:bg-nordic-slate/5 transition-all">Export CSV</button>
-             <button className="px-6 py-3 bg-nordic-ink text-nordic-snow rounded-xl text-sm font-bold hover:bg-nordic-slate transition-all shadow-lg shadow-nordic-ink/10">Manage Schedule</button>
+             <button className="px-6 py-3 bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl text-sm font-bold hover:bg-nordic-slate/5 dark:hover:bg-white/5 transition-all dark:text-nordic-dark-ink">Export CSV</button>
+             <button className="px-6 py-3 bg-nordic-ink dark:bg-nordic-blue text-nordic-snow dark:text-white rounded-xl text-sm font-bold hover:bg-nordic-slate transition-all shadow-lg shadow-nordic-ink/10">Manage Schedule</button>
           </div>
         </header>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[
-            { icon: DollarSign, label: "Total Revenue", val: `$${totalRevenue.toLocaleString()}`, trend: "+12%", color: "text-green-600" },
+            { icon: DollarSign, label: "Total Revenue", val: `€${totalRevenue.toLocaleString()}`, trend: "+12%", color: "text-green-600" },
             { icon: Calendar, label: "Active Bookings", val: activeBookings, trend: "+5", color: "text-nordic-blue" },
             { icon: Users, label: "New Customers", val: "128", trend: "+3.2%", color: "text-purple-600" },
-            { icon: TrendingUp, label: "Avg. Ticket", val: "$245", trend: "+1.5%", color: "text-orange-600" },
+            { icon: TrendingUp, label: "Avg. Ticket", val: "€245", trend: "+1.5%", color: "text-orange-600" },
           ].map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white p-8 rounded-3xl border border-nordic-slate/10 shadow-sm space-y-4"
+              className="nordic-card p-8 space-y-4"
             >
               <div className="flex justify-between items-start">
-                <div className={`p-3 bg-nordic-snow rounded-xl ${stat.color}`}>
+                <div className={`p-3 bg-nordic-snow dark:bg-white/5 rounded-xl ${stat.color}`}>
                   <stat.icon size={20} />
                 </div>
-                <span className="text-[10px] font-bold px-2 py-1 bg-green-50 text-green-600 rounded-full">{stat.trend}</span>
+                <span className="text-[10px] font-bold px-2 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 rounded-full">{stat.trend}</span>
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold tracking-widest opacity-30">{stat.label}</p>
-                <p className="text-3xl font-serif mt-1">{stat.val}</p>
+                <p className="text-[10px] uppercase font-bold tracking-widest opacity-30 dark:text-nordic-dark-ink">{stat.label}</p>
+                <p className="text-3xl font-serif mt-1 dark:text-nordic-dark-ink">{stat.val}</p>
               </div>
             </motion.div>
           ))}
@@ -123,13 +143,25 @@ const Dashboard = () => {
         {/* Charts & Tables */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            {/* Revenue Chart */}
-           <div className="lg:col-span-2 bg-white p-10 rounded-3xl border border-nordic-slate/10 shadow-sm space-y-8">
+           <div className="lg:col-span-2 nordic-card p-10 space-y-8">
               <div className="flex justify-between items-center">
-                 <h3 className="font-serif text-2xl">Revenue Trend</h3>
-                 <select className="text-xs font-bold bg-nordic-snow border-none rounded-lg px-3 py-1 outline-none">
-                   <option>Last 7 Days</option>
-                   <option>Last 30 Days</option>
-                 </select>
+                 <h3 className="font-serif text-2xl dark:text-nordic-dark-ink">Revenue Trend</h3>
+                 <div className="flex gap-2">
+                   {(['weekly', 'monthly', 'yearly'] as const).map(range => (
+                     <button
+                       key={range}
+                       onClick={() => setTimeRange(range)}
+                       className={cn(
+                         "text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-lg transition-all",
+                         timeRange === range 
+                           ? "bg-nordic-ink dark:bg-nordic-blue text-white shadow-lg" 
+                           : "bg-nordic-snow dark:bg-white/5 text-nordic-ink/40 dark:text-nordic-dark-ink/40 hover:bg-nordic-slate/5"
+                       )}
+                     >
+                       {range}
+                     </button>
+                   ))}
+                 </div>
               </div>
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -140,21 +172,21 @@ const Dashboard = () => {
                         <stop offset="95%" stopColor="#5E81AC" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888" strokeOpacity={0.1} />
                     <XAxis 
                       dataKey="name" 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{ fontSize: 10, fontWeight: 700, opacity: 0.4 }} 
+                      tick={{ fontSize: 10, fontWeight: 700, opacity: 0.4, fill: 'currentColor' }} 
                       dy={10}
                     />
                     <YAxis 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{ fontSize: 10, fontWeight: 700, opacity: 0.4 }} 
+                      tick={{ fontSize: 10, fontWeight: 700, opacity: 0.4, fill: 'currentColor' }} 
                     />
                     <Tooltip 
-                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }}
                       cursor={{ stroke: '#5E81AC', strokeWidth: 2, strokeDasharray: '4 4' }}
                     />
                     <Area type="monotone" dataKey="revenue" stroke="#5E81AC" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />

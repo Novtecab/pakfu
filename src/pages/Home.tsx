@@ -106,7 +106,7 @@ const Home = () => {
               <h3 className="text-2xl font-serif mb-2">{service.name}</h3>
               <p className="text-sm text-nordic-ink/60 mb-6 font-light line-clamp-2">{service.description}</p>
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-nordic-slate/5">
-                <span className="text-xl font-mono tracking-tighter">from ${service.price}</span>
+                <span className="text-xl font-mono tracking-tighter">from €{service.price}</span>
                 <span className="text-xs uppercase tracking-widest font-bold opacity-40 group-hover:opacity-100 transition-opacity">Details →</span>
               </div>
             </motion.div>

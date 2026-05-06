@@ -130,7 +130,7 @@ const Checkout = () => {
                 <div className="space-y-1 py-2">
                   <h2 className="text-2xl font-serif">{listing?.title}</h2>
                   <p className="text-sm opacity-40 font-bold uppercase tracking-widest">{listing?.type}</p>
-                  <p className="text-xl font-mono font-bold text-nordic-blue">${listing?.price.toLocaleString()}</p>
+                  <p className="text-xl font-mono font-bold text-nordic-blue">€{listing?.price.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -175,7 +175,7 @@ const Checkout = () => {
                 <div className="space-y-4 text-sm">
                    <div className="flex justify-between border-b border-white/10 pb-4">
                       <span className="opacity-60">Price</span>
-                      <span className="font-mono font-bold">${listing?.price.toLocaleString()}</span>
+                      <span className="font-mono font-bold">€{listing?.price.toLocaleString()}</span>
                    </div>
                    <div className="flex justify-between border-b border-white/10 pb-4">
                       <span className="opacity-60">Safety Fee</span>
@@ -183,7 +183,7 @@ const Checkout = () => {
                    </div>
                    <div className="flex justify-between pt-4">
                       <span className="text-lg font-serif">Total</span>
-                      <span className="text-2xl font-mono font-bold">${listing?.price.toLocaleString()}</span>
+                      <span className="text-2xl font-mono font-bold">€{listing?.price.toLocaleString()}</span>
                    </div>
                 </div>
 

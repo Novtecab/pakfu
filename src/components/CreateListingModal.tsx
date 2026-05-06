@@ -20,6 +20,17 @@ export default function CreateListingModal({ isOpen, onClose, type }: CreateList
     description: '',
     price: '',
     isJapaneseImport: false,
+    specs: {
+      year: '2023',
+      mileage: '',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+      engineSize: '',
+      efficiency: '',
+      drivetrain: 'AWD',
+      condition: 'Showroom Quality',
+      availability: 'Next Day Handover'
+    }
   });
   const [images, setImages] = useState<string[]>([]);
   const [showAI, setShowAI] = useState(false);
@@ -65,34 +76,36 @@ export default function CreateListingModal({ isOpen, onClose, type }: CreateList
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-nordic-snow w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-[40px] shadow-2xl flex flex-col md:flex-row"
+        className="bg-nordic-snow dark:bg-[#0F1115] w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-[40px] shadow-2xl flex flex-col md:flex-row transition-colors"
       >
         {/* Left Side: Form */}
         <div className="flex-grow p-10 overflow-y-auto">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-4xl font-serif">List your {type}</h2>
-            <button onClick={onClose} className="p-2 hover:bg-nordic-slate/10 rounded-full">
+            <h2 className="text-4xl font-serif dark:text-nordic-dark-info">List your {type}</h2>
+            <button onClick={onClose} className="p-2 hover:bg-nordic-slate/10 dark:hover:bg-white/5 rounded-full dark:text-nordic-dark-ink">
               <X size={24} />
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest opacity-40">Title</label>
+              <label className="text-xs font-bold uppercase tracking-widest opacity-40 dark:text-nordic-dark-ink">Title</label>
               <input
                 type="text"
                 required
-                className="w-full bg-white border border-nordic-slate/10 rounded-2xl p-4"
+                placeholder="e.g. 2023 Porsche 911 Carrera"
+                className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-2xl p-4 dark:text-nordic-dark-ink"
                 value={formData.title}
                 onChange={e => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest opacity-40">Description</label>
+              <label className="text-xs font-bold uppercase tracking-widest opacity-40 dark:text-nordic-dark-ink">Description</label>
               <textarea
                 required
-                className="w-full bg-white border border-nordic-slate/10 rounded-2xl p-4 min-h-[100px]"
+                placeholder="Describe your vehicle's features, history, and status..."
+                className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-2xl p-4 min-h-[100px] dark:text-nordic-dark-ink"
                 value={formData.description}
                 onChange={e => setFormData({ ...formData, description: e.target.value })}
               />
@@ -100,37 +113,124 @@ export default function CreateListingModal({ isOpen, onClose, type }: CreateList
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest opacity-40">Price ($)</label>
+                <label className="text-xs font-bold uppercase tracking-widest opacity-40 dark:text-nordic-dark-ink">Price (€)</label>
                 <input
                   type="number"
                   required
-                  className="w-full bg-white border border-nordic-slate/10 rounded-2xl p-4"
+                  placeholder="0.00"
+                  className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-2xl p-4 dark:text-nordic-dark-ink"
                   value={formData.price}
                   onChange={e => setFormData({ ...formData, price: e.target.value })}
                 />
               </div>
               {type === 'car' && (
                  <div className="space-y-2">
-                 <label className="text-xs font-bold uppercase tracking-widest opacity-40">Special Origin</label>
+                 <label className="text-xs font-bold uppercase tracking-widest opacity-40 dark:text-nordic-dark-ink">Vehicle Origin</label>
                  <button
                     type="button"
                     onClick={() => setFormData({ ...formData, isJapaneseImport: !formData.isJapaneseImport })}
                     className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
                       formData.isJapaneseImport 
-                        ? 'border-nordic-blue bg-nordic-blue/5 text-nordic-blue' 
-                        : 'border-nordic-slate/10 bg-white opacity-60'
+                        ? 'border-nordic-blue bg-nordic-blue/5 dark:bg-nordic-blue/10 text-nordic-blue' 
+                        : 'border-nordic-slate/10 dark:border-white/5 bg-white dark:bg-[#161B22] opacity-60'
                     }`}
                  >
-                    <span className="text-sm font-bold">Japanese Import</span>
+                    <span className="text-sm font-bold dark:text-nordic-dark-ink">JDM Import</span>
                     <Globe size={18} />
                  </button>
                </div>
               )}
             </div>
 
+            {type === 'car' && (
+              <div className="space-y-6 pt-4 border-t border-nordic-slate/10 dark:border-white/5">
+                <h3 className="text-xs font-bold uppercase tracking-widest opacity-40 dark:text-nordic-dark-ink">Detailed Specifications</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Year</label>
+                    <input 
+                      type="text" 
+                      placeholder="2023"
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.year}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, year: e.target.value } })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Mileage (km)</label>
+                    <input 
+                      type="text" 
+                      placeholder="12,500"
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.mileage}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, mileage: e.target.value } })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Transmission</label>
+                    <select 
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.transmission}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, transmission: e.target.value } })}
+                    >
+                      <option>Automatic</option>
+                      <option>Manual</option>
+                      <option>Semi-Auto</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Fuel Type</label>
+                    <select 
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.fuelType}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, fuelType: e.target.value } })}
+                    >
+                      <option>Petrol</option>
+                      <option>Diesel</option>
+                      <option>Electric</option>
+                      <option>Hybrid</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Engine Size</label>
+                    <input 
+                      type="text" 
+                      placeholder="2.0L / 3.0L V6"
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.engineSize}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, engineSize: e.target.value } })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Fuel Efficiency</label>
+                    <input 
+                      type="text" 
+                      placeholder="6.5L/100km"
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.efficiency}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, efficiency: e.target.value } })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase opacity-30 dark:text-nordic-dark-ink">Drivetrain</label>
+                    <select 
+                      className="w-full bg-white dark:bg-[#161B22] border border-nordic-slate/10 dark:border-white/5 rounded-xl p-3 text-sm dark:text-nordic-dark-ink"
+                      value={formData.specs.drivetrain}
+                      onChange={e => setFormData({ ...formData, specs: { ...formData.specs, drivetrain: e.target.value } })}
+                    >
+                      <option>AWD</option>
+                      <option>RWD</option>
+                      <option>FWD</option>
+                      <option>4WD</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
               disabled={isSubmitting}
-              className="w-full bg-nordic-ink text-nordic-snow font-bold py-5 rounded-3xl hover:shadow-xl transition-all disabled:opacity-50"
+              className="w-full bg-nordic-ink dark:bg-nordic-blue text-nordic-snow dark:text-white font-bold py-5 rounded-3xl hover:shadow-xl transition-all disabled:opacity-50"
             >
               Post Listing
             </button>
@@ -138,10 +238,10 @@ export default function CreateListingModal({ isOpen, onClose, type }: CreateList
         </div>
 
         {/* Right Side: Media */}
-        <div className="w-full md:w-[400px] bg-white border-l border-nordic-slate/10 p-10 overflow-y-auto space-y-8">
+        <div className="w-full md:w-[400px] bg-white dark:bg-[#161B22] border-l border-nordic-slate/10 dark:border-white/5 p-10 overflow-y-auto space-y-8">
            <header className="space-y-1">
-              <h3 className="text-xl font-serif">Visuals & Media</h3>
-              <p className="text-xs opacity-50">Generate or upload high-res images.</p>
+              <h3 className="text-xl font-serif dark:text-nordic-dark-ink">Visuals & Media</h3>
+              <p className="text-xs opacity-50 dark:text-nordic-dark-ink/50">Generate or upload high-res images.</p>
            </header>
 
            <div className="space-y-4">
@@ -159,10 +259,10 @@ export default function CreateListingModal({ isOpen, onClose, type }: CreateList
                  ))}
                  <button 
                     onClick={() => setShowAI(true)}
-                    className="aspect-square rounded-xl border-2 border-dashed border-nordic-slate/20 flex flex-col items-center justify-center gap-2 hover:border-nordic-blue transition-all group"
+                    className="aspect-square rounded-xl border-2 border-dashed border-nordic-slate/20 dark:border-white/10 flex flex-col items-center justify-center gap-2 hover:border-nordic-blue transition-all group"
                  >
-                    <Plus className="text-nordic-slate/40 group-hover:text-nordic-blue" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-100">Add AI Visual</span>
+                    <Plus className="text-nordic-slate/40 dark:text-white/20 group-hover:text-nordic-blue" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 dark:opacity-20 group-hover:opacity-100 dark:text-nordic-dark-ink">Add AI Visual</span>
                  </button>
               </div>
 

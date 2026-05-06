@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import MyAccount from './pages/MyAccount';
 import ChatPage from './pages/Chat';
 import Checkout from './pages/Checkout';
+import JDMOrders from './pages/JDMOrders';
 import { Toaster } from 'react-hot-toast';
 
 function AppContent() {
@@ -37,6 +38,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/book" element={<Booking />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/jdm-orders" element={<JDMOrders />} />
           <Route path="/checkout/:listingId" element={<Checkout />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account" element={<MyAccount />} />
@@ -53,32 +55,35 @@ function AppContent() {
           <div>
             <h4 className="font-sans font-bold uppercase text-xs tracking-widest mb-4 opacity-50">Services</h4>
             <ul className="space-y-2 text-sm text-nordic-snow/80">
-              <li>Mobile Cleaning</li>
-              <li>Ceramic Coating</li>
-              <li>Tyre Hotel</li>
-              <li>Pick & Drop Service</li>
+              <li><Link to="/book" className="hover:text-nordic-blue transition-colors">Mobile Cleaning</Link></li>
+              <li><Link to="/book" className="hover:text-nordic-blue transition-colors">Ceramic Coating</Link></li>
+              <li><Link to="/book" className="hover:text-nordic-blue transition-colors">Tyre Hotel</Link></li>
+              <li><Link to="/book" className="hover:text-nordic-blue transition-colors">Pick & Drop Service</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-sans font-bold uppercase text-xs tracking-widest mb-4 opacity-50">Marketplace</h4>
             <ul className="space-y-2 text-sm text-nordic-snow/80">
-              <li>Browse Cars</li>
-              <li>Accessories</li>
-              <li>Sell Your Car</li>
+              <li><Link to="/marketplace?filter=cars" className="hover:text-nordic-blue transition-colors">Browse Cars</Link></li>
+              <li><Link to="/marketplace?filter=accessories" className="hover:text-nordic-blue transition-colors">Accessories</Link></li>
+              <li><Link to="/marketplace" className="hover:text-nordic-blue transition-colors">Sell Your Car</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-sans font-bold uppercase text-xs tracking-widest mb-4 opacity-50">Contact</h4>
             <ul className="space-y-2 text-sm text-nordic-snow/80">
-              <li>support@futuremotors.se</li>
-              <li>+46 123 456 789</li>
+              <li><a href="mailto:support@futuremotors.se" className="hover:text-nordic-blue transition-colors">support@futuremotors.se</a></li>
+              <li><a href="tel:+46123456789" className="hover:text-nordic-blue transition-colors">+46 123 456 789</a></li>
               <li>Stockholm, Sweden</li>
             </ul>
           </div>
         </div>
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/10 flex justify-between items-center text-xs opacity-40">
           <p>© 2026 FutureMotors AB. All rights reserved.</p>
-          <p>Privacy Policy • Terms of Service</p>
+          <div className="flex gap-4">
+            <button className="hover:text-nordic-blue transition-colors">Privacy Policy</button>
+            <button className="hover:text-nordic-blue transition-colors">Terms of Service</button>
+          </div>
         </div>
       </footer>
       <Toaster position="bottom-right" />
